@@ -93,8 +93,117 @@ class Vector:
         """Return the complex representation of the vector if 2d."""
         if self.dimension != 2:
             raise ValueError("Complex representation is only valid for 2D vectors.")
-        return complex(self.vector[0], self.vector[1])
+        return complex(self[0], self[1])
     
     def __format__(self, format_spec: str) -> str:
         """Return a formatted string representation of the vector."""
         return f"<{', '.join(f'{x:{format_spec}}' for x in self.vector)}>"
+    
+    # Container methods
+    def __len__(self) -> int:
+        """Return the number of dimensions in the vector."""
+        return self.dimension
+    
+    def __iter__(self) -> iter:
+        """Return an iterator over the vector's components."""
+        return iter(self.vector)
+    
+    def __getitem__(self, index: int) -> float:
+        """Return the component at the specified index."""
+        if index < 0:
+            raise IndexError("Index out of vector range.")
+        if index >= self.dimension:
+            return 0.0
+        return self.vector[index]
+    
+    def __setitem__(self, index: int, value: float | int) -> None:
+        """Set the component at the specified index to a new value."""
+        if index < 0:
+            raise IndexError("Index out of vector range.")
+        if index >= self.dimension:
+            for i in range(self.dimension, index + 1):
+                self.vector.append(0.0)
+        self.vector[index] = float(value)
+
+    # Arithmetic operations
+    def __add__(self, other: object) -> Self:
+        """Add two vectors."""
+        if not isinstance(other, Vector):
+            return NotImplemented
+        result = Vector(self.vector if self.dimension >= other.dimension else other.vector)
+        for i in range(max(self.dimension, other.dimension)):
+            result[i] = self[i] + other[i]
+        return result
+    
+    def __mul__(self, other: object) -> float:
+        """Dot product the vector by a scalar or vector."""
+        if not isinstance(other, (int, float)):
+            return NotImplemented
+        return Vector([x * other for x in self.vector])
+        
+    def __pow__(self, other: object) -> float:
+        """Dot product the vector by a vector."""
+        if not isinstance(other, Vector):
+            return NotImplemented
+        return sum([self[i] * other[i] for i in range(
+            min(self.dimension, other.dimension)
+        )])
+    
+    def __matmul__(self, other: object) -> Self:
+        """Cross product multiplication with another vector."""
+        if not isinstance(other, Vector):
+            return NotImplemented
+        max_dim = max(self.dimension, other.dimension)
+        dim = 3 if max_dim <= 3 else None #Does not support 7D cross product yet.
+        if not dim:
+            return NotImplemented
+        return Vector([
+            self[1] * other[2] - self[2] * other[1],
+            self[2] * other[0] - self[0] * other[2],
+            self[0] * other[1] - self[1] * other[0]
+        ])
+    
+    def __sub__(self, other: object) -> Self:
+        """Subtract two vectors."""
+        if not isinstance(other, Vector):
+            return NotImplemented
+        result = self + (-other)
+
+    def __neg__(self) -> Self:
+        """Return the negation of the vector."""
+        return self * -1.0
+    
+    def __pos__(self) -> Self: return self  # Unary plus does not change the vector.
+
+    __truediv__ = None  # Division is not defined for vectors.
+    __floordiv__ = None  # Floor division is not defined for vectors.
+    __mod__ = None  # Modulus is not defined for vectors.
+
+    # In-place operations
+    def __iadd__(self, other: object) -> Self:
+        """In-place addition of two vectors."""
+        if not isinstance(other, Vector):
+            return NotImplemented
+        for i in range(max(self.dimension, other.dimension)):
+            self[i] += other[i]
+        return self
+    
+    def __isub__(self, other: object) -> Self:
+        """In-place subtraction of two vectors."""
+        if not isinstance(other, Vector):
+            return NotImplemented
+        for i in range(max(self.dimension, other.dimension)):
+            self[i] -= other[i]
+        return self
+    
+    def __imul__(self, other: object) -> Self:
+        """In-place multiplication of the vector by a scalar."""
+        if not isinstance(other, (int, float)):
+            return NotImplemented
+        for i in range(self.dimension):
+            self[i] *= other
+        return self
+    
+
+
+        
