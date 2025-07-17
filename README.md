@@ -19,21 +19,21 @@ A Python library implementing a fully-featured mathematical vector class using P
 
 ## Example Usage
 
-```python
-from vector import Vector
+Example usage and feature demonstrations are included in the test suite (`testing/vector_tests.py`).  
+To see all features in action, run the tests with:
 
-v1 = Vector([1, 2, 3])
-v2 = Vector([4, 5, 6])
+```bash
+pytest testing/vector_tests.py
+```
 
-print(f"Vector 1: {v1}")                  # <1.0, 2.0, 3.0>
-print(f"Vector 2: {v2}")                  # <4.0, 5.0, 6.0>
-print(f"Are they equal? {v1 == v2}")      # False
-print(f"Vector 1 magnitude: {v1.magnitude}")  # 3.7416573867739413
-print(f"Vector 2 direction: {v2.direction}")  # <0.455..., 0.569..., 0.683...>
-print(f"Vector 1 dimension: {v1.dimension}")  # 3
-print(f"Vector 1 < Vector 2: {v1 < v2}")      # True
-print(f"Vector 1 > Vector 2: {v1 > v2}")      # False
-print(f"<1, 2> is truthy: {bool(Vector([1, 2]))}")  # True
+## Running the Example
+
+The `main.py` file is currently a placeholder for future CLI and state management tools.
+
+## Future Plans
+
+- Provide a CLI interface for vector operations via command line
+- Explore more class functionality to make this a proper class ie. custom exceptions.
 print(f"<0, 0> is truthy: {bool(Vector([0, 0]))}")  # False
 print(f"Vector 1 as string: {str(v1)}")       # <1.0, 2.0, 3.0>
 print(f"Vector 2 as repr: {repr(v2)}")        # Vector(4.0, 5.0, 6.0)

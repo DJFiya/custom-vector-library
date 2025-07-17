@@ -6,13 +6,13 @@ class Vector:
             self,
             val_list : list[float | int] = [0]
     ):
-        self.vector = [float(v) for v in val_list]
+        self._vector = [float(v) for v in val_list]
 
     # Vector instance properties
     @property
     def magnitude(self) -> float:
         """Calculate the magnitude of the vector."""
-        return sum(x ** 2 for x in self.vector) ** 0.5
+        return sum(x ** 2 for x in self._vector) ** 0.5
     
     @property
     def direction(self) -> Self:
@@ -20,25 +20,25 @@ class Vector:
         mag = self.magnitude
         if mag == 0:
             return Vector([0] * self.size)
-        return Vector([x / mag for x in self.vector])
+        return Vector([x / mag for x in self._vector])
     
     @property
     def dimension(self) -> int:
         """Return the dimension of the vector. Also accessible as len(v)."""
-        return len(self.vector)
+        return len(self._vector)
     
     # Comparison operations + adjacent methods
     def __eq__(self, other: object) -> bool:
         """Check if two vectors are equal."""
         if not isinstance(other, Vector):
             return NotImplemented
-        return self.vector == other.vector
+        return self._vector == other._vector
     
     def __ne__(self, other: object) -> bool:
         """Check if two vectors are not equal."""
         if not isinstance(other, Vector):
             return NotImplemented
-        return self.vector != other.vector
+        return self._vector != other._vector
     
     __hash__ = None  # Vectors are mutable, so they are not hashable.
 
@@ -69,15 +69,15 @@ class Vector:
     # Type conversion methods
     def __repr__(self) -> str:
         """Return a string representation of the vector."""
-        return f"Vector({", ".join(str(x) for x in self.vector)})"
+        return f"Vector([{", ".join(str(x) for x in self._vector)}])"
     
     def __str__(self) -> str:
         """Return a string representation of the vector for printing."""
-        return f"<{', '.join(str(x) for x in self.vector)}>"
+        return f"<{', '.join(str(x) for x in self._vector)}>"
     
     def __bool__(self) -> bool:
         """Return True if the vector is non-zero, False otherwise."""
-        return any(x != 0 for x in self.vector)
+        return any(x != 0 for x in self._vector)
     
     def __int__(self) -> int:
         """Return the integer representation of the vector's magnitude."""
@@ -97,7 +97,7 @@ class Vector:
     
     def __format__(self, format_spec: str) -> str:
         """Return a formatted string representation of the vector."""
-        return f"<{', '.join(f'{x:{format_spec}}' for x in self.vector)}>"
+        return f"<{', '.join(f'{x:{format_spec}}' for x in self._vector)}>"
     
     # Container methods
     def __len__(self) -> int:
@@ -106,7 +106,7 @@ class Vector:
     
     def __iter__(self) -> iter:
         """Return an iterator over the vector's components."""
-        return iter(self.vector)
+        return iter(self._vector)
     
     def __getitem__(self, index: int) -> float:
         """Return the component at the specified index."""
@@ -114,7 +114,7 @@ class Vector:
             raise IndexError("Index out of vector range.")
         if index >= self.dimension:
             return 0.0
-        return self.vector[index]
+        return self._vector[index]
     
     def __setitem__(self, index: int, value: float | int) -> None:
         """Set the component at the specified index to a new value."""
@@ -122,15 +122,15 @@ class Vector:
             raise IndexError("Index out of vector range.")
         if index >= self.dimension:
             for i in range(self.dimension, index + 1):
-                self.vector.append(0.0)
-        self.vector[index] = float(value)
+                self._vector.append(0.0)
+        self._vector[index] = float(value)
 
     # Arithmetic operations
     def __add__(self, other: object) -> Self:
         """Add two vectors."""
         if not isinstance(other, Vector):
             return NotImplemented
-        result = Vector(self.vector if self.dimension >= other.dimension else other.vector)
+        result = Vector(self._vector if self.dimension >= other.dimension else other._vector)
         for i in range(max(self.dimension, other.dimension)):
             result[i] = self[i] + other[i]
         return result
@@ -139,7 +139,7 @@ class Vector:
         """Dot product the vector by a scalar or vector."""
         if not isinstance(other, (int, float)):
             return NotImplemented
-        return Vector([x * other for x in self.vector])
+        return Vector([x * other for x in self._vector])
         
     def __pow__(self, other: object) -> float:
         """Dot product the vector by a vector."""
@@ -168,6 +168,18 @@ class Vector:
         if not isinstance(other, Vector):
             return NotImplemented
         result = self + (-other)
+        return result
+    
+    def __div__(self, other: object) -> Self:
+        if not isinstance(other, (int, float)):
+            return NotImplemented
+        if other == 0:
+            raise ZeroDivisionError("Division by zero is not allowed.")
+        return Vector([x / other for x in self._vector])
+    
+    def __truediv__(self, other: object) -> Self:
+        """True division of the vector by a scalar."""
+        return self.__div__(other)
 
     def __neg__(self) -> Self:
         """Return the negation of the vector."""
@@ -203,6 +215,20 @@ class Vector:
         for i in range(self.dimension):
             self[i] *= other
         return self
+    
+    def __idiv__(self, other: object) -> Self:
+        """In-place division of the vector by a scalar."""
+        if not isinstance(other, (int, float)):
+            return NotImplemented
+        if other == 0:
+            raise ZeroDivisionError("Division by zero is not allowed.")
+        for i in range(self.dimension):
+            self[i] /= other
+        return self
+    
+    def __itruediv__(self, other: object) -> Self:
+        """In-place true division of the vector by a scalar."""
+        return self.__idiv__(other)
     
 
 
