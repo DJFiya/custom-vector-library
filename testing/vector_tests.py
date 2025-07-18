@@ -12,8 +12,8 @@ V5 = Vector([1, 2])
 
 def test_properties():
     assert V1.magnitude == pytest.approx(3.7417, rel=1e-4)
-    for val1, val2 in zip(V1, V1.direction*V1.magnitude):
-            assert val1 == pytest.approx(val2, rel=1e-3)
+    for val1, val2 in zip(V1, V1.direction * V1.magnitude):
+        assert val1 == pytest.approx(val2, rel=1e-3)
     assert V1.dimension == 3
     assert V4.dimension == 2
 
@@ -56,7 +56,7 @@ def test_arithmetic_operations():
     assert V1 @ V2 == Vector([-3.0, 6.0, -3.0])
     assert -V1 == Vector([-1.0, -2.0, -3.0])
     assert +V1 == V1
-    
+
 def test_inplace_operations():
     v6 = Vector([1, 2, 3])
     v6 += Vector([1, 1, 1])
@@ -70,15 +70,14 @@ def test_inplace_operations():
     with pytest.raises(ZeroDivisionError):
         v6 /= 0
 
-def error_handling():
+def test_error_handling():
     v1 = Vector([1, 2, 3])
     v2 = Vector([0, 0, 0])
-    
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(TypeError):
         v1 / v2
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(TypeError):
         v1 // v2
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(TypeError):
         v1 % v2
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(TypeError):
         bytes(v1)

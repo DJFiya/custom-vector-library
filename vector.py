@@ -150,11 +150,11 @@ class Vector:
         )])
     
     def __matmul__(self, other: object) -> Self:
-        """Cross product multiplication with another vector."""
+        """Cross product with another vector (only for 3D vectors)."""
         if not isinstance(other, Vector):
             return NotImplemented
         max_dim = max(self.dimension, other.dimension)
-        dim = 3 if max_dim <= 3 else None #Does not support 7D cross product yet.
+        dim = 3 if max_dim <= 3 else None  # Only supports 3D cross product.
         if not dim:
             return NotImplemented
         return Vector([
@@ -167,10 +167,10 @@ class Vector:
         """Subtract two vectors."""
         if not isinstance(other, Vector):
             return NotImplemented
-        result = self + (-other)
-        return result
+        return self + (-other)
     
     def __div__(self, other: object) -> Self:
+        """Division of the vector by a scalar."""
         if not isinstance(other, (int, float)):
             return NotImplemented
         if other == 0:
@@ -229,7 +229,6 @@ class Vector:
     def __itruediv__(self, other: object) -> Self:
         """In-place true division of the vector by a scalar."""
         return self.__idiv__(other)
-    
 
 
-        
+
